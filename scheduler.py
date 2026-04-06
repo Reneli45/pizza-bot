@@ -116,7 +116,13 @@ async def haftalik_ozet_gonder(bot):
 
 def setup_scheduler(app):
     """APScheduler'ı kur ve görevleri zamanla"""
-    scheduler = AsyncIOScheduler(timezone="Europe/Istanbul")
+    import asyncio
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+    scheduler = AsyncIOScheduler(timezone="Europe/Istanbul", event_loop=loop)
 
     # Her ayın 1'i saat 08:00'de aylık rapor
     scheduler.add_job(
